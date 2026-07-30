@@ -1,0 +1,46 @@
+local L=game:GetService("Lighting") 
+local G=Instance.new("ScreenGui",game.CoreGui) -- เปลี่ยนจาก PlayerGui
+G.ResetOnSpawn=false 
+G.Name="FPSBoost"
+
+local F=Instance.new("Frame",G) 
+F.Size=UDim2.fromOffset(180,60) 
+F.Position=UDim2.new(0,20,0,250) 
+F.BackgroundColor3=Color3.fromRGB(20,20,20) 
+F.Active=true F.Draggable=true 
+Instance.new("UICorner",F)
+
+local B=Instance.new("TextButton",F) 
+B.Size=UDim2.new(1,0,1,0) 
+B.Text="FPS BOOST: OFF" 
+B.Font=Enum.Font.GothamBold 
+B.TextSize=16
+B.TextColor3=Color3.new(1,1,1) 
+B.BackgroundColor3=Color3.fromRGB(0,170,0) 
+Instance.new("UICorner",B)
+
+local O=false
+B.MouseButton1Click:Connect(function() 
+	O=not O 
+	B.Text="FPS BOOST: "..(O and "ON" or "OFF") 
+	B.BackgroundColor3=O and Color3.fromRGB(170,0,0) or Color3.fromRGB(0,170,0) 
+	
+	L.GlobalShadows=not O 
+	L.FogEnd=1e5 
+	
+	for _,v in ipairs(L:GetChildren())do 
+		if v:IsA("PostEffect")then v.Enabled=not O end 
+	end
+	
+	for _,v in ipairs(workspace:GetDescendants())do 
+		if v:IsA("ParticleEmitter")or v:IsA("Smoke")or v:IsA("Fire")then 
+			v.Enabled=not O 
+		elseif v:IsA("Decal")or v:IsA("Texture")then 
+			v.Transparency=O and 1 or 0 
+		elseif O and v:IsA("BasePart")then 
+			v.Material=Enum.Material.Plastic 
+			v.Reflectance=0 
+		end 
+	end 
+end)
+print("FPS BOOST โหลดแล้ว")
